@@ -1,0 +1,53 @@
+//create getRule function
+const combine = (b1, b2, b3) => (b1 << 2) + (b2 << 1) + (b3 << 0);
+const getBit = (num, pos) => (num >> pos) & 1;
+const getRule = num => (b1, b2, b3) => get_bit(num, combine(b1, b2, b3));
+
+//create canvas
+window.onload = function (){
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 800;
+  const cells_across = 80; // Number of cells horizontally in the grid
+  const cell_scale = width / cells_across; // Size of each cell
+  const cells_down = height / cell_scale; // Number of cells vertically in the grid
+
+  const rule = get_rule(126); // The rule to display
+  document.body.appendChild(canvas);
+  
+//canvas cannot operate without context; create context  
+const context = canvas.getContext('2d');
+
+//create initialRow function to create initial conditions for automaton
+function initialRow(length){
+  const initialRow = Array(length).fill(0);
+  initialRow[math.Floor(length/2) = 1; 
+  
+  return initialRow;
+  draw_rule(context, rule, cell_scale, cells_across, cells_down)
+}
+
+//create nextRow function
+const next_row = (row, rule) => row.map((_, i) => rule(row[i - 1], row[i], row[i + 1]));
+
+
+//create drawRule function
+function drawRule(ctx, rule, scale, width, height){
+  let row = initialRow(width);
+  for(let i = 0; i < height; i++){
+    draw_row(ctx, row, scale);
+    row = next_row(row, rule);
+   }
+ }
+  
+//create drawRow function
+function drawRow(ctx, row, scale) {
+  ctx.save();
+  row.forEach(cell => {
+    ctx.fillStyle = cell === 1 ? '#000' : '#fff';
+    ctx.fillRect(0, 0, scale, scale);
+    ctx.translate(scale, 0);
+  });
+  ctx.restore();
+  ctx.translate(0, scale);
+}
