@@ -1,0 +1,136 @@
+//OPTION 1: INITIAL ROW WITH ONE BLACK CELL IN CENTER
+
+//find bit at a position in a given number
+const getBit = (num, pos) => (num >> pos) & 1;
+//combine three bits to get an integer
+const combine = (b1, b2, b3) => (b1 << 2) + (b2 << 1) + (b3 << 0);
+//converts rule number to rule
+const getRule = num => (b1, b2, b3) => getBit(num, combine(b1, b2, b3));
+
+//creates canvas with given size and number of cells
+window.onload = function() {
+  const width = 1000; // Width of the canvas
+  const height = 1000; // Height of the canvas
+
+  const cells_across = 1000; // # of cells horizontally
+  const cell_scale = width / cells_across; // size of each cell
+  const cells_down = height / cell_scale; // # of cells horizontally
+
+  //creates constant 'rule' with chosen rule function
+  const rule = getRule(30); // The rule to display
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  document.body.appendChild(canvas);
+  
+  //create context for canvas
+  const context = canvas.getContext('2d');
+  
+  //draws rule using function below
+  drawRule(context, rule, cell_scale, cells_across, cells_down)
+};
+
+//uses for loop to draw each consecutive row, using drawRow and nextRow
+function drawRule(ctx, rule, scale, width, height) {
+  let row = initialRow(width);
+  for (let i = 0; i < height; i++) {
+    drawRow(ctx, row, scale);
+    row = nextRow(row, rule);
+  }
+};
+
+//saves, translates, modifies, and restores each row
+function drawRow(ctx, row, scale) {
+  ctx.save();
+  row.forEach(cell => {
+    ctx.fillStyle = cell === 1 ? '#000' : '#fff';
+    ctx.fillRect(0, 0, scale, scale);
+    ctx.translate(scale, 0);
+  });
+  ctx.restore();
+  ctx.translate(0, scale);
+};
+
+//creates next row based on neighboring cells in previous rows
+function nextRow(old, rule) {
+  return old.map((_, i) => rule(old[i - 1], old[i], old[i + 1]));
+};
+
+//creates initial row with one black cell in center
+function initialRow(width) {
+  const initialRow = Array(width).fill(0);
+  initialRow[Math.floor(width / 2)] = 1;
+
+  return initialRow;
+};
+
+
+
+/* FOR RANDOM INITIAL ROW
+
+//find bit at a position in a given number
+const getBit = (num, pos) => (num >> pos) & 1;
+//combine three bits to get an integer
+const combine = (b1, b2, b3) => (b1 << 2) + (b2 << 1) + (b3 << 0);
+//converts rule number to rule
+const getRule = num => (b1, b2, b3) => getBit(num, combine(b1, b2, b3));
+
+//creates canvas with given size and number of cells
+window.onload = function() {
+  const width = 1000; // Width of the canvas
+  const height = 1000; // Height of the canvas
+
+  const cells_across = 200; // # of cells horizontally
+  const cell_scale = width / cells_across; // size of each cell
+  const cells_down = height / cell_scale; // # of cells vertically
+
+  const rule = getRule(1); // The rule to display
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  document.body.appendChild(canvas);
+  
+  //create context for canvas
+  const context = canvas.getContext('2d');
+    
+  //draws rule using function below
+  drawRule(context, rule, cell_scale, cells_across, cells_down)
+};
+
+//uses for loop to draw each consecutive row, using drawRow and nextRow
+function drawRule(ctx, rule, scale, width, height) {
+  let row = initial_random_row(width);
+  for (let i = 0; i < height; i++) {
+    drawRow(ctx, row, scale);
+    row = nextRow(row, rule);
+  }
+};
+ 
+//saves, translates, modifies, and restores each row
+function drawRow(ctx, row, scale) {
+  ctx.save();
+  row.forEach(cell => {
+    ctx.fillStyle = cell === 1 ? '#000' : '#fff';
+    ctx.fillRect(0, 0, scale, scale);
+    ctx.translate(scale, 0);
+  });
+  ctx.restore();
+  ctx.translate(0, scale);
+};
+
+//creates next row based on neighboring cells in previous rows
+function nextRow(old, rule) {
+  return old.map((_, i) => rule(old[i - 1], old[i], old[i + 1]));
+};
+
+//creates random initial row
+function initial_random_row(width) {
+  const initialRow = Array.from(Array(width), _ => Math.floor(Math.random() * 2));
+  return initialRow;
+};
+
+*/
